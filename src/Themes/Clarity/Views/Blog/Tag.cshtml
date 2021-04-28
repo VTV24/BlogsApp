@@ -1,0 +1,29 @@
+@model BlogPostListVM
+
+@{
+    Layout = "_BlogPostLayout";
+    var tagTitle = Model.TagTitle;
+    var posts = Model.BlogPostViewModels;
+}
+
+<h1 class="tag-title">
+    Tag: @tagTitle
+</h1>
+
+@foreach (var post in posts)
+{
+    <article>
+        <header>
+            <h1>
+                <a href="@post.RelativeLink">@post.Title</a>
+            </h1>
+            @await Html.PartialAsync("_PostInfo", post)
+        </header>
+        <div class="post-body">
+            @Html.Raw(post.Excerpt)
+            <div class="read-more">
+                <a href="@post.RelativeLink">Read More</a>
+            </div>
+        </div>
+    </article>
+}

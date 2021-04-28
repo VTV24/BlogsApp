@@ -1,0 +1,50 @@
+﻿@{
+    var coreSettings = await settingService.GetSettingsAsync<CoreSettings>();
+    var blogSettings = await settingService.GetSettingsAsync<BlogSettings>();
+    var title = ViewData["Title"] == null ? coreSettings.Title : $"{ViewData["Title"]} - {coreSettings.Title}";
+    var description = ViewData["Description"] == null ? coreSettings.Tagline : ViewData["Description"] as string;
+    var domain = Context.Request.Host;
+    var showDisqus = blogSettings.AllowComments &&
+        blogSettings.CommentProvider == ECommentProvider.Disqus && !blogSettings.DisqusShortname.IsNullOrEmpty();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@title</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:domain" content="@domain" />
+    <meta name="twitter:title" property="og:title" itemprop="title name" content="@title" />
+    @if (!string.IsNullOrEmpty(description))
+    {
+        <meta name="description" content="@description" />
+        <meta name="twitter:description" property="og:description" itemprop="description" content="@description" />
+    }
+    @RenderSection("Canonical", required: false)
+    <link rel="EditURI" type="application/rsd+xml" title="RSD" href="~/rsd" />
+    <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="~/wlwmanifest.xml" />
+    <link rel="stylesheet" href="~/_content/@coreSettings.Theme/css/style.css" asp-append-version="true" />
+    <plugin-area id="Styles" />
+    <vc:analytics />
+</head>
+<body>
+    <vc:header />
+    <vc:cookie-consent />
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+    <vc:footer />
+    <plugin-area id="FootContent" />
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <plugin-area id="FootScripts" />
+    @if (showDisqus)
+    {
+        <script id="dsq-count-scr" src="@string.Format("//{0}.disqus.com/count.js", blogSettings.DisqusShortname)" async></script>
+    }
+</body>
+</html>
