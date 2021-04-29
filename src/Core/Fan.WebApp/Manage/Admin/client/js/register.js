@@ -1,15 +1,19 @@
 ﻿/**
- * @see Login.cshtml
+ * @see Register.cshtml
  */
 new Vue({
 	el: "#app",
 	data: {
 		valid: !1,
+		fullName: "",
+		fullNameRules: [(a) => !!a.trim() || "Fullname is required"],
+
 		userName: "",
 		nameRules: [(a) => !!a.trim() || "Email or username is required"],
+
 		password: "",
 		passwordRules: [(a) => !!a.trim() || "Password is required"],
-		rememberMe: !1,
+
 		errMsg: "",
 	},
 	computed: {
@@ -17,18 +21,19 @@ new Vue({
 			return document.querySelector('input[name="__RequestVerificationToken"][type="hidden"]').value;
 		},
 		payload: function () {
-			return {userName: this.userName, password: this.password, rememberMe: this.rememberMe};
+			return {fullName: this.fullName, userName: this.userName, password: this.password};
 		},
 	},
 	methods: {
 		login() {
 			axios
-				.post("/api/auth/login", this.payload, {headers: {"XSRF-TOKEN": this.tok}})
+				.post("/api/auth/register", this.payload, {headers: {"XSRF-TOKEN": this.tok}})
 				.then(() => {
 					window.location.replace(this.getQueryParam("ReturnUrl") || "/admin");
 				})
-				.catch(() => {
-					this.errMsg = "Login failed, please try again!";
+				.catch((err) => {
+					console.log(err);
+					this.errMsg = "Register failed, please try again!";
 				});
 		},
 		getQueryParam(a) {

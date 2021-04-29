@@ -1,2 +1,114 @@
-Vue.component("site-users",{mixins:[siteUsersMixin],data:()=>({dialog:!1,editDialog:!1,headers:[{text:"",value:"avatar",sortable:!1},{text:"Display Name",value:"displayName"},{text:"Username",value:"userName"},{text:"Joined On",value:"joinedOn"},{text:"Locked Out",value:"lockedOut"},{text:"Role",value:"role"},{text:"Actions",value:"name",sortable:!1}],editedIndex:-1,editedUser:{email:"",displayName:"",userName:"",password:"",passwordVisible:!1,role:""},defaultUser:{email:"",displayName:"",userName:"",password:"",passwordVisible:!1,role:""},rules:{emailRules:[a=>!!a||"Required",a=>/.+@.+/.test(a)||"Email must be valid"],userNameRules:[a=>!!a||"Required",a=>!!a&&2<=a.length||"Min 2 characters",a=>!!a&&24>=a.length||"Max 20 characters",a=>/^[a-zA-Z0-9-_]+$/.test(a)||"Alphanumeric, dash, underscore only"],displayNameRules:[a=>!!a||"Required",a=>!!a&&2<=a.length||"Min 2 characters",a=>!!a&&24>=a.length||"Max 24 characters"],passwordRules:{required:a=>!!a&&!!a.trim()||"Required",min:a=>!!a&&8<=a.length||"Min 8 characters"}},pagination:{},loading:!1,errMsg:""}),methods:{addUser(){this.dialog=!0},close(){this.dialog=!1,this.editedUser=Object.assign({},this.defaultUser),this.editedIndex=-1,this.$refs.form.reset(),this.errMsg=""},save(){this.editedUser.role=this.selectedRole,axios.post("/admin/users",this.editedUser,this.$root.headers).then(a=>{-1<this.editedIndex?Object.assign(this.users[this.editedIndex],this.editedUser):this.users.push(a.data),this.close()}).catch(a=>{this.errMsg=a.response.data,this.$root.toastError("Add user failed.")})},editUser(a){alert(`This feature is coming soon.`)},lockUser(a){alert(`This feature is coming soon.`)}}});
-//# sourceMappingURL=site-users.js.map
+﻿Vue.component('site-users', {
+    mixins: [siteUsersMixin],
+    data: () => ({
+        dialog: false,
+        editDialog: false,
+        headers: [
+            { text: '', value: 'avatar', sortable: false },
+            { text: 'Display Name', value: 'displayName' },
+            { text: 'Username', value: 'userName' },
+            { text: 'Joined On', value: 'joinedOn' },
+            { text: 'Locked Out', value: 'lockedOut' },
+            { text: 'Role', value: 'role' },
+            { text: 'Actions', value: 'name', sortable: false }
+        ],
+        editedIndex: -1,
+        editedUser: {
+            email: '',
+            displayName: '',
+            userName: '',
+            password: '',
+            passwordVisible: false,
+            role: '',
+        },
+        defaultUser: {
+            email: '',
+            displayName: '',
+            userName: '',
+            password: '',
+            passwordVisible: false,
+            role: '',
+        },
+        rules: {
+            emailRules: [
+                v => !!v || 'Required',
+                v => /.+@.+/.test(v) || 'Email must be valid',
+            ],
+            userNameRules: [
+                v => !!v || 'Required',
+                v => (!!v && v.length >= 2) || 'Min 2 characters',
+                v => (!!v && v.length <= 24) || 'Max 20 characters',
+                v => /^[a-zA-Z0-9-_]+$/.test(v) || 'Alphanumeric, dash, underscore only',
+            ],
+            displayNameRules: [
+                v => !!v || 'Required',
+                v => (!!v && v.length >= 2) || 'Min 2 characters',
+                v => (!!v && v.length <= 24) || 'Max 24 characters',
+            ],
+            passwordRules: {
+                required: v => (!!v && !!v.trim()) || 'Required',
+                min: v => (!!v && v.length >= 8) || 'Min 8 characters',
+            },
+        },
+        pagination: {},
+        loading: false,
+        errMsg: '',
+    }),
+    methods: {
+        /**
+         * Open dialog to add a new user.
+         */
+        addUser() {
+            this.dialog = true;
+        },
+        /**
+         * Close dialog and reset form.
+         */
+        close() {
+            this.dialog = false;
+            this.editedUser = Object.assign({}, this.defaultUser);
+            this.editedIndex = -1;
+            this.$refs.form.reset();
+            this.errMsg = '';
+        },
+        /**
+         * Upsert a user.
+         */
+        save() {
+            this.editedUser.role = this.selectedRole;
+            console.log('Edited User: ', this.editedUser);
+            axios.post('/admin/users', this.editedUser, this.$root.headers)
+                .then(resp => {
+                    console.log('Returned user: ', resp.data);
+                    if (this.editedIndex > -1) { // update todo
+                        Object.assign(this.users[this.editedIndex], this.editedUser)
+                    } else { // insert
+                        this.users.push(resp.data);
+                    }
+                    this.close();
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.errMsg = err.response.data;
+                    this.$root.toastError('Add user failed.');   
+                });
+        },
+        /**
+         * Edit user role.
+         * @param {any} user
+         */
+        editUser(user) {
+            alert(`This feature is coming soon.`);
+            //this.editedIndex = this.users.indexOf(user)
+            //this.editedUser = Object.assign({}, user)
+            //this.editDialog = true
+        },
+        /**
+         * Lock user out.
+         * @param {any} user
+         */
+        lockUser(user) {
+            alert(`This feature is coming soon.`);
+        }
+    },
+});

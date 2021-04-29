@@ -7,13 +7,6 @@ using System.Threading.Tasks;
 
 namespace Fan.Web.Api
 {
-    /// <summary>
-    /// Api for authentication.
-    /// </summary>
-    /// <remarks>
-    /// This api is doing Cookie Authentication. With Identity after login is successful it outputs
-    /// to the client a cookie named ".AspNetCore.Identity.Application".
-    /// </remarks>
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -28,17 +21,6 @@ namespace Fan.Web.Api
             _signInManager = signInManager;
         }
 
-        /// <summary>
-        /// User login.
-        /// </summary>
-        /// <param name="loginUser"></param>
-        /// <remarks>
-        /// Logout can still happen the traditional way.
-        /// 
-        /// TODO: 1. check role and return url; 2. error messages.
-        /// With 2.1 !ModelState.IsValid is not necessary but error messages returned is buried deep.
-        /// </remarks>
-        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("[action]")]
         [ProducesResponseType(200)]
@@ -59,6 +41,26 @@ namespace Fan.Web.Api
                 return BadRequest("Invalid credentials!");
 
             return Ok();
+        }
+
+
+        [AllowAnonymous]
+        [HttpPost("[action]")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register([FromBody] RegisterVM registerUser)
+        {
+            var user = await _userSvc.FindByEmailOrUsernameAsync(registerUser.UserName);
+            if(user != null)
+                return BadRequest("User already exist!");
+
+            var result = await _userSvc.RegisterUser(username: registerUser.UserName, email: registerUser.Email, name: registerUser.FullName, password: registerUser.Password);
+
+            if (result == true)
+                return Ok();
+
+            return BadRequest("Register fail!");
         }
     }
 }

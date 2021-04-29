@@ -1,0 +1,48 @@
+﻿@page
+@{
+    Layout = "_Layout.cshtml";
+    ViewData["Title"] = "Register";
+}
+
+<div id="app" v-cloak>
+    <v-app id="inspire">
+        <v-content>
+            <v-container fluid fill-height>
+                <v-layout align-center justify-center>
+                    <v-flex xs12 sm8 md4>
+                        <v-card class="elevation-12">
+                            <v-toolbar dark color="primary">
+                                <v-toolbar-title>Register</v-toolbar-title>
+                            </v-toolbar>
+                            <v-card-text>
+                                <v-form v-model="valid">
+                                    <v-alert :value="errMsg.length" type="error">{{ errMsg }}</v-alert>
+
+                                    <v-text-field v-model="name" required :rules="nameRules"
+                                                  prepend-icon="badge" name="name" label="Enter your name" type="text"></v-text-field>
+
+                                    <v-text-field v-model="email" required :rules="emailRules"
+                                                  prepend-icon="email" name="userName" label="Enter your email" type="text"></v-text-field>
+
+                                    <v-text-field v-model="username" required :rules="usernameRules"
+                                                  prepend-icon="person" name="userName" label="Enter your username" type="text"></v-text-field>
+
+                                    <v-text-field v-model="password" required :rules="passwordRules"
+                                                  id="password" prepend-icon="lock" name="password" label="Password" type="password"></v-text-field>
+                                </v-form>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="primary" @@click="login" :disabled="!valid">Login</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </v-app>
+</div>
+
+@section Scripts {
+    <script src="~/admin/js/register.js" asp-append-version="true"></script>
+}

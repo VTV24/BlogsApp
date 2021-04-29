@@ -115,7 +115,7 @@ namespace Fan.WebApp.Manage.Admin
         private async Task<List<UserVM>> GetUsersAsync()
         {
             var userVMs = new List<UserVM>();
-            var users = _userManager.Users.AsEnumerable(); // TODO better ways to get users
+            var users =  _userManager.Users.AsEnumerable(); // TODO better ways to get users
 
             foreach (var user in users)
             {

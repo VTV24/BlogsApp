@@ -51,27 +51,11 @@ namespace Fan.WebApp
             }
         }
 
-        /// <summary>
-        /// Returns a <see cref="IWebHostBuilder"/>.
-        /// </summary>
-        /// <param name="args"></param>
-        /// <remarks>
-        /// It's built with <see href="https://github.com/aspnet/MetaPackages/blob/dev/src/Microsoft.AspNetCore/WebHost.cs#L148">CreateDefaultBuilder</see>
-        /// it loads confiuration from these providers in this order:
-        /// - appsettings.json (optional)
-        /// - appsettings.{env.EnvironmentName}.json (optional)
-        /// - User Secrets (dev only)
-        /// - Environment vars
-        /// - Command line args
-        /// it also configure logging to Console and Debug, 
-        /// <see href="https://github.com/serilog/serilog-aspnetcore/issues/3">but I'm using Serilog in place of those</see>,
-        /// the configuration of Serilog is at the beginning of the Main method.
-        /// </remarks>
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStaticWebAssets(); // https://bit.ly/36vNWgY
+                    webBuilder.UseStaticWebAssets(); 
                     webBuilder.UseStartup<Startup>();
                 })
                 .UseSerilog();

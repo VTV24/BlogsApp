@@ -1,2 +1,57 @@
-let app=new Vue({el:"#app",mixins:[composeMixin,editorMdMixin],data:()=>({drawer:null,panel:[!0,!0,!0],editor:null,saveDisabled:!1,saveText:"Save",snackbar:{show:!1,text:"",color:"",timeout:1e4}}),computed:{tok:function(){return document.querySelector("input[name=\"__RequestVerificationToken\"][type=\"hidden\"]").value},headers(){return{headers:{"XSRF-TOKEN":this.tok}}}},mounted(){this.initEditor()},methods:{async save(){try{this.saveDisabled=!0,this.saveText="Saving...",await axios.post("/admin/compose/pagenav?handler=save",{pageId:this.pageId,navMd:this.editor.getMarkdown()},{headers:{"XSRF-TOKEN":this.tok}}),this.toast("Page navigation saved.")}catch(a){this.toastError(a.response.data)}this.saveText="Save",this.saveDisabled=!1},insertNav(a){this.editor.insertValue(`- [[${a}]]\n`)},toast(a,b="silver"){this.snackbar.show=!0,this.snackbar.text=a,this.snackbar.color=b,this.snackbar.timeout=3e3},toastError(a){this.snackbar.show=!0,this.snackbar.text=a,this.snackbar.color="red"}}});
-//# sourceMappingURL=compose-pagenav.js.map
+﻿let app = new Vue({
+    el: '#app',
+    mixins: [composeMixin, editorMdMixin],
+    data: () => ({
+        drawer: null,
+        panel: [true, true, true],
+        editor: null,
+        saveDisabled: false,
+        saveText: 'Save',
+        snackbar: {
+            show: false,
+            text: '',
+            color: '',
+            timeout: 10000,
+        },
+    }),
+    computed: {
+        tok: function () {
+            return document.querySelector('input[name="__RequestVerificationToken"][type="hidden"]').value;
+        },
+        headers() {
+            return { headers: { 'XSRF-TOKEN': this.tok } };
+        },
+    },
+    mounted() {
+        this.initEditor();
+    },
+    methods: {
+        async save() {
+            try {
+                this.saveDisabled = true;
+                this.saveText = 'Saving...';
+                await axios.post('/admin/compose/pagenav?handler=save',
+                    { pageId: this.pageId, navMd: this.editor.getMarkdown() }, { headers: { 'XSRF-TOKEN': this.tok } });
+                this.toast('Page navigation saved.');
+            } catch (err) {
+                this.toastError(err.response.data);
+            }
+            this.saveText = 'Save';
+            this.saveDisabled = false;
+        },
+        insertNav(title) {
+            this.editor.insertValue(`- [[${title}]]\n`);
+        },
+        toast(text, color = 'silver') {
+            this.snackbar.show = true;
+            this.snackbar.text = text;
+            this.snackbar.color = color;
+            this.snackbar.timeout = 3000;
+        },
+        toastError(text) {
+            this.snackbar.show = true;
+            this.snackbar.text = text;
+            this.snackbar.color = 'red';
+        },
+    },
+});

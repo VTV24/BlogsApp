@@ -1,2 +1,177 @@
-Vue.component("navigation",{mixins:[navigationMixin],data:()=>({dialogVisible:!1,dialogTitle:"",settingsUrl:null,infoPanels:[!0,!1,!1,!1],custLinkValid:!1,custLinkUrl:"",custLinkText:"",rules:{required:a=>!!a||"Required.",url:()=>!0},infoOptions:{group:{name:"navs",pull:"clone",put:!1},sort:!1},menuOptions:{group:"navs",ghostClass:"sortable-ghost"}}),mounted(){this.initSettingsUpdatedHandler()},methods:{async add(a){let b={fromId:a.from.id,menuId:a.to.id,index:a.newIndex,oldIndex:a.oldIndex};if("page-navs"===a.from.id){let c=this.pages[a.oldIndex];b.id=c.id,b.type=c.type,b.text=c.text}else if("app-navs"===a.from.id){let c=this.apps[a.oldIndex];b.id=c.id,b.type=c.type,b.text=c.text}else if("cat-navs"===a.from.id){let c=this.cats[a.oldIndex];b.id=c.id,b.type=c.type,b.text=c.text}else{let c=this.menus.find(b=>b.id.toString()===a.to.id),d=c.navs[a.newIndex];b.id=d.id,b.type=d.type,b.text=d.text,b.title=d.title,b.url=d.url,b.origNavName=d.origNavName}console.log("Nav being added: ",b);try{let c=await axios.post("/admin/navigation?handler=add",b,this.$root.headers),d=this.menus.find(b=>b.id.toString()===a.to.id),e=d.navs[a.newIndex];e.settingsUrl=c.data.settingsUrl,e.origNavName=b.origNavName}catch(a){console.error(a),this.$root.toastError("Add menu item failed.")}},async sort(a){if(a.from.id===a.to.id)try{let b={menuId:a.to.id,index:a.newIndex,oldIndex:a.oldIndex};console.log("sort: ",b),await axios.post("/admin/navigation?handler=sort",b,this.$root.headers)}catch(a){console.error(a),this.$root.toastError("Sort menu item failed.")}},async deleteNav(a,b){if(confirm(`Are you sure to delete this menu item?`))try{await axios.delete(`/admin/navigation?menuId=${a}&index=${b}`,this.$root.headers);let c=this.menus.find(b=>b.id===a);c.navs.splice(b,1)}catch(a){console.error(a),this.$root.toastError("Delete menu item failed.")}},async addCustLink(){try{console.log("custLinkUrl: ",this.custLinkUrl),console.log("custLinkText: ",this.custLinkText),console.log("selectedMenuId",this.selectedMenuId),console.log("menu",this.menus.find(a=>a.id===this.selectedMenuId).navs);let a={url:this.custLinkUrl,text:this.custLinkText,menuId:this.selectedMenuId,index:this.menus.find(a=>a.id===this.selectedMenuId).navs.length},b=await axios.post("/admin/navigation?handler=customLink",a,this.$root.headers);console.log(b.data),a.settingsUrl=b.data.settingsUrl,a.type=b.data.type,this.menus.find(a=>a.id===this.selectedMenuId).navs.push(a)}catch(a){console.error(a),this.$root.toastError("Add menu item failed.")}},async setHome(a){try{console.log("Set nav as home: ",a),await axios.post(`/admin/navigation?handler=home`,a,this.$root.headers),this.home=a,this.$root.toast("Home updated.")}catch(a){console.error(a),this.$root.toastError("Set as home failed.")}},viewSettings(a){console.log(a),this.dialogTitle=a.text,this.dialogVisible=!0,this.settingsUrl=a.settingsUrl},closeDialog(){this.dialogVisible=!1},initSettingsUpdatedHandler(){let a=this;window.document.addEventListener("ExtSettingsUpdated",b=>{console.log("nav settings updated: ",b.detail);let c=this.menus.find(a=>a.id===b.detail.menuId),d=c.navs[b.detail.index];d.text=b.detail.text,a.$root.toast(b.detail.msg),a.closeDialog()})}}});
-//# sourceMappingURL=navigation.js.map
+﻿Vue.component('navigation', {
+    mixins: [navigationMixin],
+    data: () => ({
+        dialogVisible: false,
+        dialogTitle: '',
+        settingsUrl: null,
+        infoPanels: [true, false, false, false],
+        custLinkValid: false,
+        custLinkUrl: '',
+        custLinkText: '',
+        rules: {
+            required: value => !!value || 'Required.', // trim handled on server side
+            url: value => {
+                //const pattern = 'TODO url regex that includes root /'
+                //return pattern.test(value) || 'Invalid URL.'
+                return true;
+            }
+        },
+        infoOptions: {
+            group: { name: 'navs', pull: 'clone', put: false },
+            sort: false
+        },
+        menuOptions: {
+            group: 'navs',
+            ghostClass: 'sortable-ghost'
+        }
+    }),
+    mounted() {
+        this.initSettingsUpdatedHandler();
+    },
+    methods: {
+        async add(evt) {
+            let im = {
+                fromId: evt.from.id,
+                menuId: evt.to.id,
+                index: evt.newIndex,
+                oldIndex: evt.oldIndex,
+            };
+
+            if (evt.from.id === 'page-navs') {
+                let nav = this.pages[evt.oldIndex];
+                im.id = nav.id;
+                im.type = nav.type;
+                im.text = nav.text;
+            }
+            else if (evt.from.id === 'app-navs') {
+                let nav = this.apps[evt.oldIndex];
+                im.id = nav.id;
+                im.type = nav.type;
+                im.text = nav.text;
+            }
+            else if (evt.from.id === 'cat-navs') {
+                let nav = this.cats[evt.oldIndex];
+                im.id = nav.id;
+                im.type = nav.type;
+                im.text = nav.text;
+            }
+            else { // from another menu
+                // since the nav is dragged to the new menu, use to.id
+                let menu = this.menus.find(m => m.id.toString() === evt.to.id);
+                let nav = menu.navs[evt.newIndex];
+                im.id = nav.id;
+                im.type = nav.type;
+                im.text = nav.text;
+                im.title = nav.title;
+                im.url = nav.url;
+                im.origNavName = nav.origNavName;
+            }
+
+            console.log('Nav being added: ', im);
+
+            try {
+                let resp = await axios.post('/admin/navigation?handler=add', im, this.$root.headers);
+                let menu = this.menus.find(m => m.id.toString() === evt.to.id);
+                let nav = menu.navs[evt.newIndex];
+                nav.settingsUrl = resp.data.settingsUrl;
+                nav.origNavName = im.origNavName;
+            } catch (e) {
+                console.error(e);
+                this.$root.toastError('Add menu item failed.');
+            }
+        },
+        async sort(evt) {
+            if (evt.from.id !== evt.to.id) return;
+
+            try {
+                let im = {
+                    menuId: evt.to.id,
+                    index: evt.newIndex,
+                    oldIndex: evt.oldIndex,
+                };
+
+                console.log('sort: ', im);
+                await axios.post('/admin/navigation?handler=sort', im, this.$root.headers);
+            } catch (e) {
+                console.error(e);
+                this.$root.toastError('Sort menu item failed.');
+            }
+        },
+        async deleteNav(menuId, index) {
+            if (confirm(`Are you sure to delete this menu item?`)) {
+                try {
+                    await axios.delete(`/admin/navigation?menuId=${menuId}&index=${index}`, this.$root.headers);
+                    let menu = this.menus.find(m => m.id === menuId);
+                    menu.navs.splice(index, 1);
+                } catch (e) {
+                    console.error(e);
+                    this.$root.toastError('Delete menu item failed.');
+                }
+            }
+        },
+        async addCustLink() {
+            try {
+                console.log('custLinkUrl: ', this.custLinkUrl);
+                console.log('custLinkText: ', this.custLinkText);
+                console.log('selectedMenuId', this.selectedMenuId);
+                console.log('menu', this.menus.find(m => m.id === this.selectedMenuId).navs);
+
+                let nav = {
+                    url: this.custLinkUrl,
+                    text: this.custLinkText,
+                    menuId: this.selectedMenuId,
+                    index: this.menus.find(m => m.id === this.selectedMenuId).navs.length,
+                };
+
+                let resp = await axios.post('/admin/navigation?handler=customLink', nav, this.$root.headers);
+                console.log(resp.data);
+                nav.settingsUrl = resp.data.settingsUrl;
+                nav.type = resp.data.type;
+                this.menus.find(m => m.id === this.selectedMenuId).navs.push(nav);
+
+                // reset form unfortunately clears v-select, need to figure out how to avoid
+                //this.$refs.custLinkForm.reset();
+                //console.log('selectedMenuId', this.selectedMenuId);
+                //this.selectedMenuId = 1; // reset the select
+            } catch (e) {
+                console.error(e);
+                this.$root.toastError('Add menu item failed.');
+            }
+        },
+        async setHome(nav) {
+            try {
+                console.log('Set nav as home: ', nav);
+                await axios.post(`/admin/navigation?handler=home`, nav, this.$root.headers);
+                this.home = nav;
+                this.$root.toast('Home updated.');
+            } catch (e) {
+                console.error(e);
+                this.$root.toastError('Set as home failed.');
+            }
+        },
+        viewSettings(nav) {
+            console.log(nav);
+            this.dialogTitle = nav.text;
+            this.dialogVisible = true;
+            this.settingsUrl = nav.settingsUrl;
+        },
+        closeDialog() {
+            this.dialogVisible = false;
+        },
+        initSettingsUpdatedHandler() {
+            let self = this;
+            window.document.addEventListener('ExtSettingsUpdated', e => {
+                console.log('nav settings updated: ', e.detail);
+
+                // update the menu nav text
+                let menu = this.menus.find(m => m.id === e.detail.menuId);
+                let nav = menu.navs[e.detail.index];
+                nav.text = e.detail.text;
+
+                // show toast and close dialog
+                self.$root.toast(e.detail.msg);
+                self.closeDialog();
+            });
+        },
+    }
+});

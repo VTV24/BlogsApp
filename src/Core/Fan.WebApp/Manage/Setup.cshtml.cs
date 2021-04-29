@@ -105,13 +105,6 @@ namespace Fan.WebApp.Manage
             return Page();
         }
 
-        /// <summary>
-        /// Setting up site.
-        /// </summary>
-        /// <remarks>
-        /// It creates the first user, system roles, assign Administrator role to the user, 
-        /// core settings, first blog post and blog settings.
-        /// </remarks>
         public async Task<IActionResult> OnPostAsync([FromBody] SetupModel model)
         {
             try
@@ -210,10 +203,6 @@ namespace Fan.WebApp.Manage
             }
         }
 
-        /// <summary>
-        /// Creates pre-defined system roles.
-        /// </summary>
-        /// <returns></returns>
         private async Task<IdentityResult> CreateSystemRolesAsync()
         {
             IdentityResult result = IdentityResult.Success;
@@ -225,7 +214,6 @@ namespace Fan.WebApp.Manage
                 {
                     Name = Role.ADMINISTRATOR_ROLE,
                     IsSystemRole = true,
-                    Description = "Administrator has full power over the site and can do everything."
                 });
                 _logger.LogInformation($"{Role.ADMINISTRATOR_ROLE} role created.");
             }
@@ -237,9 +225,19 @@ namespace Fan.WebApp.Manage
                 {
                     Name = Role.EDITOR_ROLE,
                     IsSystemRole = true,
-                    Description = "Editor can only publish and manage posts including the posts of other users."
                 });
                 _logger.LogInformation($"{Role.EDITOR_ROLE} role created.");
+            }
+
+            //User role
+            if (!await _roleManager.RoleExistsAsync(Role.USER_ROLE))
+            {
+                result = await _roleManager.CreateAsync(new Role
+                {
+                    Name = Role.USER_ROLE,
+                    IsSystemRole = true,
+                });
+                _logger.LogInformation($"{Role.USER_ROLE} role created.");
             }
 
             return result;

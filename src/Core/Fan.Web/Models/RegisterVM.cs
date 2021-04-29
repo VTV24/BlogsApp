@@ -2,8 +2,16 @@
 
 namespace Fan.Web.Models
 {
-    public class LoginVM
+    public class RegisterVM
     {
+        [Required]
+        public string FullName { get; set; }
+
+        [Required]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+
         [Required]
         public string UserName { get; set; }
 
@@ -11,6 +19,5 @@ namespace Fan.Web.Models
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public bool RememberMe { get; set; }
     }
 }

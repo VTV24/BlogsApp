@@ -57,7 +57,7 @@ namespace Fan.WebApp
             services.AddIdentity<User, Role>(options =>
             {
                 options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 8;
+                options.Password.RequiredLength = 4;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
@@ -117,6 +117,7 @@ namespace Fan.WebApp
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminRoles", policy => policy.RequireRole("Administrator", "Editor"));
+                options.AddPolicy("UserRoles", policy => policy.RequireRole("User"));
             });
                  
             // MVC, Razor Pages, TempData, Json.net

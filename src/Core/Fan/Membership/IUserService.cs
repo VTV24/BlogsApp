@@ -10,5 +10,7 @@ namespace Fan.Membership
         /// <param name="emailOrUsername"></param>
         /// <returns></returns>
         Task<User> FindByEmailOrUsernameAsync(string emailOrUsername);
+
+        Task<bool> RegisterUser(string username, string email, string name, string password);
     }
 }
