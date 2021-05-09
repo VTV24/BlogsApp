@@ -124,7 +124,7 @@ namespace Fan.WebApp.Manage
                     UserName = model.UserName,
                     Email = model.Email,
                     DisplayName = model.DisplayName
-                };              
+                };
 
                 IdentityResult result = IdentityResult.Success;
 
@@ -296,7 +296,7 @@ namespace Fan.WebApp.Manage
                 Title = "Hello World",
                 Body = await GetSetupFileContent("post-hello.html"),
                 Excerpt = "A blogging joke to break ice :)",
-                CategoryTitle = secondCat.Title, 
+                CategoryTitle = secondCat.Title,
                 TagTitles = new List<string> { "blogging", "jokes" },
             });
 
@@ -310,7 +310,7 @@ namespace Fan.WebApp.Manage
                 Title = "Welcome to Fanray",
                 Body = await GetSetupFileContent("post-welcome.html"),
                 Excerpt = "Some tips to get you started blogging!",
-                CategoryTitle = defaultCat.Title, 
+                CategoryTitle = defaultCat.Title,
                 TagTitles = new List<string> { "blogging", "tips" },
             });
 

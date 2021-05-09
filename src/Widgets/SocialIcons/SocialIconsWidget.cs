@@ -56,10 +56,9 @@ namespace SocialIcons
         /// <returns></returns>
         public static List<SocialLink> SocialLinkSeeds = new List<SocialLink>
         {
-            new SocialLink { Icon = "rss", Url = "/feed" },
-            new SocialLink { Icon = "twitter", Url = "https://twitter.com/fanraymedia" },
-            new SocialLink { Icon = "youtube", Url = "https://www.youtube.com/user/fanraymedia" },
-            new SocialLink { Icon = "github", Url = "https://github.com/fanraymedia" },
+            new SocialLink { Icon = "facebook", Url = "https://www.facebook.com/toiyeudulich.org" },
+            new SocialLink { Icon = "twitter", Url = "https://www.facebook.com/toiyeudulich.org" },
+            new SocialLink { Icon = "youtube", Url = "https://www.facebook.com/toiyeudulich.org" },
         };
 
         /// <summary>
