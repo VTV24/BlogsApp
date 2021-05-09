@@ -29,7 +29,7 @@ namespace Fan.Plugins
         public PluginService(IWebHostEnvironment hostingEnvironment,
                         IDistributedCache distributedCache,
                         IMetaRepository metaRepository,
-                        ILogger<PluginService> logger) 
+                        ILogger<PluginService> logger)
             : base(metaRepository, distributedCache, hostingEnvironment, logger)
         {
         }
@@ -175,7 +175,7 @@ namespace Fan.Plugins
                 }
 
                 return list;
-            });            
+            });
         }
 
         /// <summary>

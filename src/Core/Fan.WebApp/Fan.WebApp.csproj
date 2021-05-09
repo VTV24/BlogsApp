@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Plugins\ForkMeRibbon\ForkMeRibbon.csproj" />
     <ProjectReference Include="..\..\SysPlugins\Editor.md\Editor.md.csproj" />
     <ProjectReference Include="..\..\SysPlugins\Shortcodes\Shortcodes.csproj" />
     <ProjectReference Include="..\..\Themes\Clarity\Clarity.csproj" />
@@ -37,6 +36,10 @@
 
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Plugins\" />
   </ItemGroup>
 
 </Project>

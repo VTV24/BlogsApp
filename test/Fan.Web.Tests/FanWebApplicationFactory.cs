@@ -25,7 +25,7 @@ namespace Fan.Web.Tests
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {            
+        {
             builder.ConfigureServices(services =>
             {
                 // Remove the app's DbContext registration.
@@ -105,8 +105,8 @@ namespace Fan.Web.Tests
         {
             var metas = new List<Meta>
             {
-                new Meta { Id = 1, Key = "coresettings.title", Value = "Fanray", Type = EMetaType.Setting },
-                new Meta { Id = 2, Key = "coresettings.tagline", Value = "A fanray blog", Type = EMetaType.Setting },
+                new Meta { Id = 1, Key = "coresettings.title", Value = "Blog", Type = EMetaType.Setting },
+                new Meta { Id = 2, Key = "coresettings.tagline", Value = "", Type = EMetaType.Setting },
                 new Meta { Id = 3, Key = "coresettings.theme", Value = "Clarity", Type = EMetaType.Setting },
                 new Meta { Id = 4, Key = "coresettings.timezoneid", Value = "Pacific Standard Time", Type = EMetaType.Setting },
                 new Meta { Id = 5, Key = "coresettings.googleanalyticstrackingid", Value = "", Type = EMetaType.Setting },
@@ -165,7 +165,7 @@ namespace Fan.Web.Tests
                 Body = "A post body.",
                 Category = cat,
                 UserId = USER_ID,
-                CreatedOn = new DateTimeOffset(POST_DATE), 
+                CreatedOn = new DateTimeOffset(POST_DATE),
                 Title = "A published post",
                 Slug = POST_SLUG,
                 Type = EPostType.BlogPost,
@@ -200,7 +200,7 @@ namespace Fan.Web.Tests
                 CreatedOn = new DateTimeOffset(new DateTime(2017, 01, 01), new TimeSpan(-7, 0, 0)),
                 Type = EPostType.Page,
                 Status = EPostStatus.Published,
-                PageLayout = (byte) EPageLayout.Layout2,
+                PageLayout = (byte)EPageLayout.Layout2,
             };
 
             var parent = new Post
@@ -215,7 +215,7 @@ namespace Fan.Web.Tests
                 CreatedOn = new DateTimeOffset(new DateTime(2017, 01, 01), new TimeSpan(-7, 0, 0)),
                 Type = EPostType.Page,
                 Status = EPostStatus.Published,
-                PageLayout = (byte) EPageLayout.Layout3,
+                PageLayout = (byte)EPageLayout.Layout3,
             };
 
             var child = new Post
@@ -230,7 +230,7 @@ namespace Fan.Web.Tests
                 CreatedOn = new DateTimeOffset(new DateTime(2017, 01, 01), new TimeSpan(-7, 0, 0)),
                 Type = EPostType.Page,
                 Status = EPostStatus.Published,
-                PageLayout = (byte) EPageLayout.Layout3,
+                PageLayout = (byte)EPageLayout.Layout3,
             };
 
             list.Add(homePage);

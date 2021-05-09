@@ -2,12 +2,6 @@
 
 namespace Fan.Plugins
 {
-    /// <summary>
-    /// The plugin manifest.
-    /// </summary>
-    /// <remarks>
-    /// Contains properties from plugin.json and properties for view.
-    /// </remarks>
     public class PluginManifest : Manifest
     {
         /// <summary>

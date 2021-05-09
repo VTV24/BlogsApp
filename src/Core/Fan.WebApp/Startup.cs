@@ -66,7 +66,6 @@ namespace Fan.WebApp
             .AddEntityFrameworkStores<FanDbContext>()
             .AddDefaultTokenProviders();
 
-            // Cookie https://bit.ly/2FNyPnr
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/login";
@@ -119,12 +118,13 @@ namespace Fan.WebApp
                 options.AddPolicy("AdminRoles", policy => policy.RequireRole("Administrator", "Editor"));
                 options.AddPolicy("UserRoles", policy => policy.RequireRole("User"));
             });
-                 
+
             // MVC, Razor Pages, TempData, Json.net
             var builder = services.AddMvc() // https://bit.ly/2XTLFZB
                 .AddApplicationPart(typeof(HomeController).Assembly) // https://bit.ly/2Zbbe8I
                 .AddSessionStateTempDataProvider()
-                .AddNewtonsoftJson(options => {
+                .AddNewtonsoftJson(options =>
+                {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
@@ -199,13 +199,13 @@ namespace Fan.WebApp
             app.UseStatusCodePagesWithReExecute("/Home/ErrorCode/{0}"); // needs to be after hsts and rewrite
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseAuthentication(); 
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseCookiePolicy();
             app.UseSession(); // for TempData only
             app.UsePlugins(env);
 
-            app.UseEndpoints(endpoints => 
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("Home", "", new { controller = "Home", action = "Index" });
                 BlogRoutes.RegisterRoutes(endpoints);

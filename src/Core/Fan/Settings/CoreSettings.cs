@@ -13,9 +13,9 @@ namespace Fan.Settings
         public string Title { get; set; } = "Fanray";
 
         /// <summary>
-        /// Short description on what the blog is about. Default "A fanray blog".
+        /// Short description on what the blog is about.
         /// </summary>
-        public string Tagline { get; set; } = "A fanray blog";
+        public string Tagline { get; set; } = "";
 
         /// <summary>
         /// Default theme "Clarity".

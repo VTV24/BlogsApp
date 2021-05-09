@@ -25,10 +25,8 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddPlugins(this IServiceCollection services, IWebHostEnvironment hostingEnvironment)
         {
             var sysPluginsDirs = Directory.GetDirectories(Path.Combine(hostingEnvironment.ContentRootPath, "SysPlugins"));
-            var pluginsDirs = Directory.GetDirectories(Path.Combine(hostingEnvironment.ContentRootPath, "Plugins"));
-            var totalDirs = new string[sysPluginsDirs.Length + pluginsDirs.Length];
+            var totalDirs = new string[sysPluginsDirs.Length];
             sysPluginsDirs.CopyTo(totalDirs, 0);
-            pluginsDirs.CopyTo(totalDirs, sysPluginsDirs.Length);
             var binDir = Util.IsRunningFromTestHost() ? Environment.CurrentDirectory :
                 Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
@@ -45,7 +43,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                     // load plugin dll
                     var pluginManifest = JsonConvert.DeserializeObject<PluginManifest>(File.ReadAllText(pluginJson));
-                    var dllPath = Path.Combine(binDir, pluginManifest.GetDllFileName());                   
+                    var dllPath = Path.Combine(binDir, pluginManifest.GetDllFileName());
                     var assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(dllPath);
 
                     // configure plugin
