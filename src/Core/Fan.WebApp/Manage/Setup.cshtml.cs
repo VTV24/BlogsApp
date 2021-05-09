@@ -345,11 +345,7 @@ namespace Fan.WebApp.Manage
                 Title = "Posts",
                 Status = EPostStatus.Published,
                 CreatedOn = DateTimeOffset.Now,
-<<<<<<< HEAD
                 PageLayout = (byte)EPageLayout.Layout3,
-=======
-                PageLayout = (byte)EPageLayout.Layout3, 
->>>>>>> parent of 5f840c7 (update)
                 Excerpt = "How to create posts using Fanray.",
                 Body = await GetSetupFileContent("page-posts.html"),
                 BodyMark = await GetSetupFileContent("page-posts.md"),
