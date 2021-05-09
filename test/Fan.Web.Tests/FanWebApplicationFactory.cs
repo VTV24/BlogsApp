@@ -25,7 +25,7 @@ namespace Fan.Web.Tests
         : WebApplicationFactory<TStartup> where TStartup : class
     {
         protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
+        {            
             builder.ConfigureServices(services =>
             {
                 // Remove the app's DbContext registration.
@@ -165,7 +165,7 @@ namespace Fan.Web.Tests
                 Body = "A post body.",
                 Category = cat,
                 UserId = USER_ID,
-                CreatedOn = new DateTimeOffset(POST_DATE),
+                CreatedOn = new DateTimeOffset(POST_DATE), 
                 Title = "A published post",
                 Slug = POST_SLUG,
                 Type = EPostType.BlogPost,
@@ -200,7 +200,7 @@ namespace Fan.Web.Tests
                 CreatedOn = new DateTimeOffset(new DateTime(2017, 01, 01), new TimeSpan(-7, 0, 0)),
                 Type = EPostType.Page,
                 Status = EPostStatus.Published,
-                PageLayout = (byte)EPageLayout.Layout2,
+                PageLayout = (byte) EPageLayout.Layout2,
             };
 
             var parent = new Post
@@ -215,7 +215,7 @@ namespace Fan.Web.Tests
                 CreatedOn = new DateTimeOffset(new DateTime(2017, 01, 01), new TimeSpan(-7, 0, 0)),
                 Type = EPostType.Page,
                 Status = EPostStatus.Published,
-                PageLayout = (byte)EPageLayout.Layout3,
+                PageLayout = (byte) EPageLayout.Layout3,
             };
 
             var child = new Post
@@ -230,7 +230,7 @@ namespace Fan.Web.Tests
                 CreatedOn = new DateTimeOffset(new DateTime(2017, 01, 01), new TimeSpan(-7, 0, 0)),
                 Type = EPostType.Page,
                 Status = EPostStatus.Published,
-                PageLayout = (byte)EPageLayout.Layout3,
+                PageLayout = (byte) EPageLayout.Layout3,
             };
 
             list.Add(homePage);

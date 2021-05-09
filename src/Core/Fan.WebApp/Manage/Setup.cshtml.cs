@@ -124,7 +124,7 @@ namespace Fan.WebApp.Manage
                     UserName = model.UserName,
                     Email = model.Email,
                     DisplayName = model.DisplayName
-                };
+                };              
 
                 IdentityResult result = IdentityResult.Success;
 
@@ -296,7 +296,7 @@ namespace Fan.WebApp.Manage
                 Title = "Hello World",
                 Body = await GetSetupFileContent("post-hello.html"),
                 Excerpt = "A blogging joke to break ice :)",
-                CategoryTitle = secondCat.Title,
+                CategoryTitle = secondCat.Title, 
                 TagTitles = new List<string> { "blogging", "jokes" },
             });
 
@@ -310,7 +310,7 @@ namespace Fan.WebApp.Manage
                 Title = "Welcome to Fanray",
                 Body = await GetSetupFileContent("post-welcome.html"),
                 Excerpt = "Some tips to get you started blogging!",
-                CategoryTitle = defaultCat.Title,
+                CategoryTitle = defaultCat.Title, 
                 TagTitles = new List<string> { "blogging", "tips" },
             });
 
@@ -345,7 +345,11 @@ namespace Fan.WebApp.Manage
                 Title = "Posts",
                 Status = EPostStatus.Published,
                 CreatedOn = DateTimeOffset.Now,
+<<<<<<< HEAD
                 PageLayout = (byte)EPageLayout.Layout3,
+=======
+                PageLayout = (byte)EPageLayout.Layout3, 
+>>>>>>> parent of 5f840c7 (update)
                 Excerpt = "How to create posts using Fanray.",
                 Body = await GetSetupFileContent("page-posts.html"),
                 BodyMark = await GetSetupFileContent("page-posts.md"),
