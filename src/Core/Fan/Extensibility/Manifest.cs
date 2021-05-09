@@ -29,7 +29,7 @@ namespace Fan.Extensibility
         /// </summary>
         public string Version { get; set; }
         /// <summary>
-        /// Lowest version it works with.
+        /// Lowest Fanray version it works with.
         /// </summary>
         public string RequiresAtLeast { get; set; }
         /// <summary>
