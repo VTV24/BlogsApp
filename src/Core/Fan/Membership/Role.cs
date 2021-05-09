@@ -7,7 +7,6 @@ namespace Fan.Membership
     {
         public const string ADMINISTRATOR_ROLE = "Administrator";
         public const string EDITOR_ROLE = "Editor";
-        public const string AUTHOR_ROLE = "Author";
         public const string USER_ROLE = "User";
 
         /// <summary>
