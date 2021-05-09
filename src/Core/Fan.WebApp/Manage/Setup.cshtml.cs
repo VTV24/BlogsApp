@@ -432,7 +432,7 @@ namespace Fan.WebApp.Manage
         /// </summary>
         private async Task SetupThemePluginsAndWidgetsAsync()
         {
-            //  theme
+            // Clarity theme
             await _themeService.ActivateThemeAsync("Clarity");
 
             // Activate plugins
