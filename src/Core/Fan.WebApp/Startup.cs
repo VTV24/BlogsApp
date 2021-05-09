@@ -181,6 +181,8 @@ namespace Fan.WebApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseExceptionHandler("/Home/Error");
+
 #if DEBUG
                 app.UseBrowserLink();
 #endif
