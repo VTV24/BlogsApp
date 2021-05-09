@@ -105,8 +105,8 @@ namespace Fan.Web.Tests
         {
             var metas = new List<Meta>
             {
-                new Meta { Id = 1, Key = "coresettings.title", Value = "Fanray", Type = EMetaType.Setting },
-                new Meta { Id = 2, Key = "coresettings.tagline", Value = "A fanray blog", Type = EMetaType.Setting },
+                new Meta { Id = 1, Key = "coresettings.title", Value = "Blog", Type = EMetaType.Setting },
+                new Meta { Id = 2, Key = "coresettings.tagline", Value = "", Type = EMetaType.Setting },
                 new Meta { Id = 3, Key = "coresettings.theme", Value = "Clarity", Type = EMetaType.Setting },
                 new Meta { Id = 4, Key = "coresettings.timezoneid", Value = "Pacific Standard Time", Type = EMetaType.Setting },
                 new Meta { Id = 5, Key = "coresettings.googleanalyticstrackingid", Value = "", Type = EMetaType.Setting },

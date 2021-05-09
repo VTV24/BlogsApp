@@ -36,6 +36,9 @@ namespace Fan.Web.Tests
         [InlineData("/blog/technology/feed")]
         [InlineData("/about")]
         [InlineData("/about/ray")]
+        //[InlineData("/preview/post/2017/01/01/test-post")]
+        //[InlineData("/preview/page/about")]
+        //[InlineData("/preview/page/about/ray")]
         public async Task All_blog_routes_should_return_suscess_status_code(string url)
         {
             // Arrange: a http client
