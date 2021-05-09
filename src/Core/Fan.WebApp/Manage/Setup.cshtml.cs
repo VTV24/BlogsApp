@@ -323,12 +323,104 @@ namespace Fan.WebApp.Manage
         /// <returns></returns>
         private async Task SetupPagesAndNavigationAsync()
         {
+            // -------------------------------------------- pages
+
+            // "docs" parent page
+            var docsPage = await pageService.CreateAsync(new Blog.Models.Page
+            {
+                UserId = 1,
+                Title = "Docs",
+                Status = EPostStatus.Published,
+                CreatedOn = DateTimeOffset.Now,
+                PageLayout = (byte)EPageLayout.Layout3, // multi-page
+                Body = await GetSetupFileContent("page-docs.html"),
+                BodyMark = await GetSetupFileContent("page-docs.md"),
+            });
+
+            // "posts" child page
+            await pageService.CreateAsync(new Blog.Models.Page
+            {
+                UserId = 1,
+                ParentId = docsPage.Id,
+                Title = "Posts",
+                Status = EPostStatus.Published,
+                CreatedOn = DateTimeOffset.Now,
+                PageLayout = (byte)EPageLayout.Layout3,
+                Excerpt = "How to create posts using Fanray.",
+                Body = await GetSetupFileContent("page-posts.html"),
+                BodyMark = await GetSetupFileContent("page-posts.md"),
+            });
+
+            // "pages" child page
+            await pageService.CreateAsync(new Blog.Models.Page
+            {
+                UserId = 1,
+                ParentId = docsPage.Id,
+                Title = "Pages",
+                Status = EPostStatus.Published,
+                CreatedOn = DateTimeOffset.Now,
+                PageLayout = (byte)EPageLayout.Layout3,
+                Excerpt = "How to create pages using Fanray.",
+                Body = await GetSetupFileContent("page-pages.html"),
+                BodyMark = await GetSetupFileContent("page-pages.md"),
+            });
+
+            // "add a home page" child page
+            await pageService.CreateAsync(new Blog.Models.Page
+            {
+                UserId = 1,
+                ParentId = docsPage.Id,
+                Title = "Add a Home Page",
+                Status = EPostStatus.Published,
+                CreatedOn = DateTimeOffset.Now,
+                PageLayout = (byte)EPageLayout.Layout3,
+                Excerpt = "This exercise shows you how to add a Home page.",
+                Body = await GetSetupFileContent("page-exercise.html"),
+                BodyMark = await GetSetupFileContent("page-exercise.md"),
+            });
+
+            // page navigation
+            await pageService.SaveNavAsync(docsPage.Id, await GetSetupFileContent("pagenav.md"));
+
+            // "about"
+            var aboutPage = await pageService.CreateAsync(new Blog.Models.Page
+            {
+                UserId = 1,
+                Title = "About",
+                Status = EPostStatus.Published,
+                CreatedOn = DateTimeOffset.Now,
+                PageLayout = (byte)EPageLayout.Layout1, // default
+                Excerpt = "About the Fanray project.",
+                Body = await GetSetupFileContent("page-about.html"),
+                BodyMark = await GetSetupFileContent("page-about.md"),
+            });
+
+            _logger.LogInformation("Default pages created");
+
+            // -------------------------------------------- site navigation
+
             // Blog (App)
             await navigationService.AddNavToMenuAsync(EMenu.Menu1, 0, new Nav
             {
                 Id = App.BLOG_APP_ID,
                 Text = App.BLOG_APP_NAME,
                 Type = ENavType.App
+            });
+
+            // Docs (Page)
+            await navigationService.AddNavToMenuAsync(EMenu.Menu1, 1, new Nav
+            {
+                Id = docsPage.Id,
+                Text = docsPage.Title,
+                Type = ENavType.Page
+            });
+
+            // About (Page)
+            await navigationService.AddNavToMenuAsync(EMenu.Menu1, 2, new Nav
+            {
+                Id = aboutPage.Id,
+                Text = aboutPage.Title,
+                Type = ENavType.Page
             });
 
             _logger.LogInformation("Site navigation created");
