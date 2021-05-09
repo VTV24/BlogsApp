@@ -438,7 +438,6 @@ namespace Fan.WebApp.Manage
             // Activate plugins
 
             await pluginService.ActivatePluginAsync("Editor.md");
-            await pluginService.ActivatePluginAsync("ForkMeRibbon");
             await pluginService.ActivatePluginAsync("Shortcodes");
 
             // System-defined Areas

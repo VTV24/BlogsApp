@@ -156,7 +156,7 @@ namespace Fan.WebApp
             // RCLs to monitor
             if (Env.IsDevelopment())
             {
-                string[] extDirs = { "Plugins", "SysPlugins", "Themes", "Widgets" };
+                string[] extDirs = { "SysPlugins", "Themes", "Widgets" };
                 string[] extPaths = { };
 
                 foreach (var extDir in extDirs)
