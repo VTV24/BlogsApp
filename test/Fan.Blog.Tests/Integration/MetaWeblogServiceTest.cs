@@ -208,7 +208,7 @@ namespace Fan.Blog.Tests.Integration
             var result = await _svc.GetUsersBlogsAsync(APP_KEY, USERNAME, PASSWORD, ROOT_URL);
 
             // Assert
-            Assert.Equal("Yoosun", result[0].BlogName);
+            Assert.Equal("Blogs App", result[0].BlogName);
         }
 
         /// <summary>
