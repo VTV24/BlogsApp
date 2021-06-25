@@ -10,18 +10,12 @@ using System.Threading.Tasks;
 
 namespace Fan.Settings
 {
-    /// <summary>
-    /// The service that manages settings.
-    /// </summary>
     public class SettingService : ISettingService
     {
         private readonly IMetaRepository metaRepository;
         private readonly IDistributedCache cache;
         private readonly ILogger<SettingService> logger;
 
-        /// <summary>
-        /// Cache key for all settings records.
-        /// </summary>
         private const string KEY_ALL_SETTINGS = "All-Settings";
         /// <summary>
         /// Cache time for all setting records is 2 min.
