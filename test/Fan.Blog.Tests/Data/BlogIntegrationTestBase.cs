@@ -178,18 +178,13 @@ namespace Fan.Blog.Tests.Data
                     Status = (i % 2 == 0) ? EPostStatus.Draft : EPostStatus.Published, // drafts / published
                 };
 
-                if (i % 2 == 0)
-                {
-                    post.PostTags = new List<PostTag> { // posts tagged c#
+                post.PostTags = i % 2 == 0
+                    ? new List<PostTag> { // posts tagged c#
                         new PostTag { Post = post, Tag = tag2 },
-                    };
-                }
-                else
-                {
-                    post.PostTags = new List<PostTag> { // posts tagged asp.net
+                    }
+                    : new List<PostTag> { // posts tagged asp.net
                         new PostTag { Post = post, Tag = tag1 },
                     };
-                }
 
                 list.Add(post);
             }
