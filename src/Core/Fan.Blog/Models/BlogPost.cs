@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 namespace Fan.Blog.Models
 {
-    /// <summary>
-    /// A blog post.
-    /// </summary>
     public class BlogPost : Post
     {
         public BlogPost()

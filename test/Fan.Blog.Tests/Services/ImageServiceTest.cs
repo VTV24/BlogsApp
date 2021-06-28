@@ -12,9 +12,6 @@ using Xunit;
 
 namespace Fan.Blog.Tests.Services
 {
-    /// <summary>
-    /// Unit tests for <see cref="ImageService"/>.
-    /// </summary>
     public class ImageServiceTest
     {
         protected Mock<IMediaService> _mediaSvcMock;
@@ -26,17 +23,12 @@ namespace Fan.Blog.Tests.Services
         const string FILENAME = "pic.jpg";
         const string STORAGE_ENDPOINT = "https://localhost:44381";
 
-        /// <summary>
-        /// Consturctor initialization called before each test.
-        /// </summary>
         public ImageServiceTest()
         {
-            // settings
             var _settingSvcMock = new Mock<ISettingService>();
             _settingSvcMock.Setup(svc => svc.GetSettingsAsync<CoreSettings>()).Returns(Task.FromResult(new CoreSettings()));
             _settingSvcMock.Setup(svc => svc.GetSettingsAsync<BlogSettings>()).Returns(Task.FromResult(new BlogSettings()));
 
-            // appsettings
             var appSettingsMock = new Mock<IOptionsSnapshot<AppSettings>>();
             appSettingsMock.Setup(o => o.Value).Returns(new AppSettings());
 
@@ -61,7 +53,6 @@ namespace Fan.Blog.Tests.Services
         [Fact]
         public async void ProcessResponsiveImageAsync_on_large_2200x1650_landscape_picture()
         {
-            // Setup media
             _mediaSvcMock.Setup(svc => svc.GetMediaAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new Media
                 {
@@ -87,7 +78,6 @@ namespace Fan.Blog.Tests.Services
         [Fact]
         public async void ProcessRepsonsiveImageAsync_on_medium_large_960x1440_portrait_picture()
         {
-            // Setup media
             _mediaSvcMock.Setup(svc => svc.GetMediaAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new Media
                 {
@@ -113,7 +103,6 @@ namespace Fan.Blog.Tests.Services
         [Fact]
         public async void ProcessRepsonsiveImageAsync_on_tiny_90x90_square_picture()
         {
-            // Setup media
             _mediaSvcMock.Setup(svc => svc.GetMediaAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
                 .Returns(Task.FromResult(new Media
                 {
@@ -131,116 +120,75 @@ namespace Fan.Blog.Tests.Services
             Assert.Equal(expected, output);
         }
 
-        /// <summary>
-        /// When there is no resize, you will always get original image url.
-        /// </summary>
         [Fact]
         public void GetImageUrl_with_0_ResizeCount()
         {
-            // Given a media with no resize count
             _media.ResizeCount = 0;
 
-            // Regardless which size you ask it'll return original
             var origUrl = $"{_absPath}/{FILENAME}";
 
-            // original -> original
             var actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Original);
             Assert.Equal(origUrl, actualUrl);
 
-            // large -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Large);
             Assert.Equal(origUrl, actualUrl);
 
-            // medium -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Medium);
             Assert.Equal(origUrl, actualUrl);
 
-            // small -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Small);
             Assert.Equal(origUrl, actualUrl);
         }
 
-        /// <summary>
-        /// When there is 1 resize, meaning only original and small were saved,
-        /// unless you asked for small, you'll always get original.
-        /// </summary>
-        /// <remarks>
-        /// Image author uploads an image of width 450px, the cut off for small is 400px,
-        /// thus it will save original 450px and one small 400px.  When asked for a large,
-        /// it will return you the original 450px image.
-        /// </remarks>
         [Fact]
         public void GetImageUrl_with_1_ResizeCount()
         {
-            // Given a media with 1 resize count
             _media.ResizeCount = 1;
 
-            // You will get small unless you ask for original
             var origUrl = $"{_absPath}/{FILENAME}";
 
-            // original -> original
             var actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Original);
             Assert.Equal(origUrl, actualUrl);
 
-            // large -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Large);
             Assert.Equal(origUrl, actualUrl);
 
-            // medium large -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.MediumLarge);
             Assert.Equal(origUrl, actualUrl);
 
-            // medium -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Medium);
             Assert.Equal(origUrl, actualUrl);
 
-            // small -> small
             var smallUrl = $"{_absPath}/sm/{FILENAME}";
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Small);
             Assert.Equal(smallUrl, actualUrl);
         }
 
-        /// <summary>
-        /// When there is 2 resizes, meaning original plus small and medium have been saved,
-        /// you'll get original only if you ask for original, large and medium large, in all 
-        /// other cases you get what you ask for.
-        /// </summary>
         [Fact]
         public void GetImageUrl_with_2_ResizeCount()
         {
-            // Given a media with 2 resize counts
             _media.ResizeCount = 2;
 
             var origUrl = $"{_absPath}/{FILENAME}";
             var smallUrl = $"{_absPath}/sm/{FILENAME}";
             var mediumUrl = $"{_absPath}/md/{FILENAME}";
 
-            // original -> original
             var actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Original);
             Assert.Equal(origUrl, actualUrl);
 
-            // large -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Large);
             Assert.Equal(origUrl, actualUrl);
 
-            // medium large -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.MediumLarge);
             Assert.Equal(origUrl, actualUrl);
 
-            // medium -> medium
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Medium);
             Assert.Equal(mediumUrl, actualUrl);
 
-            // small -> small
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Small);
             Assert.Equal(smallUrl, actualUrl);
         }
 
-        /// <summary>
-        /// When there is 3 resizes, meaning original plus small, medium and medium large have been saved,
-        /// you'll get original only if you ask for original and large, in all other cases you get
-        /// what you ask for.
-        /// </summary>
         [Fact]
         public void GetImageUrl_with_3_ResizeCount()
         {
@@ -251,31 +199,22 @@ namespace Fan.Blog.Tests.Services
             var mediumUrl = $"{_absPath}/md/{FILENAME}";
             var mediumLargeUrl = $"{_absPath}/ml/{FILENAME}";
 
-            // original -> original
             var actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Original);
             Assert.Equal(origUrl, actualUrl);
 
-            // large -> original
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Large);
             Assert.Equal(origUrl, actualUrl);
 
-            // medium large -> medium large
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.MediumLarge);
             Assert.Equal(mediumLargeUrl, actualUrl);
 
-            // medium -> medium
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Medium);
             Assert.Equal(mediumUrl, actualUrl);
 
-            // small -> small
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Small);
             Assert.Equal(smallUrl, actualUrl);
         }
 
-        /// <summary>
-        /// When there is 4 resizes, meaning original plus small, medium, medium large and large have been saved,
-        /// you'll get original only if you ask for original, in all other cases you get what you ask for.
-        /// </summary>
         [Fact]
         public void GetImageUrl_with_4_ResizeCount()
         {
@@ -287,23 +226,18 @@ namespace Fan.Blog.Tests.Services
             var mediumLargeUrl = $"{_absPath}/ml/{FILENAME}";
             var largeUrl = $"{_absPath}/lg/{FILENAME}";
 
-            // original -> original
             var actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Original);
             Assert.Equal(origUrl, actualUrl);
 
-            // large -> large
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Large);
             Assert.Equal(largeUrl, actualUrl);
 
-            // medium large -> medium large
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.MediumLarge);
             Assert.Equal(mediumLargeUrl, actualUrl);
 
-            // medium -> medium
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Medium);
             Assert.Equal(mediumUrl, actualUrl);
 
-            // small -> small
             actualUrl = _imgSvc.GetAbsoluteUrl(_media, EImageSize.Small);
             Assert.Equal(smallUrl, actualUrl);
         }

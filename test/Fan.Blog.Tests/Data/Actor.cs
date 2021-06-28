@@ -2,9 +2,6 @@
 
 namespace Fan.Blog.Tests.Helpers
 {
-    /// <summary>
-    /// Different users that interact with the system. Used for tests.
-    /// </summary>
     public class Actor
     {
         public const int ADMIN_ID = 1;

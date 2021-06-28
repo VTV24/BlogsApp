@@ -1,6 +1,6 @@
 ﻿using Fan.Blog.Enums;
-using Fan.Blog.Tests.Helpers;
 using Fan.Blog.Models;
+using Fan.Blog.Tests.Helpers;
 using Fan.Data;
 using Fan.Medias;
 using Fan.Tests.Data;
@@ -9,13 +9,8 @@ using System.Collections.Generic;
 
 namespace Fan.Blog.Tests.Data
 {
-    /// <summary>
-    /// Base class for all blog integration tests, it seeds initial blog data.
-    /// </summary>
     public class BlogIntegrationTestBase : IntegrationTestBase
     {
-        // -------------------------------------------------------------------- Seed data
-
         public const string POST_SLUG = "test-post";
         public const string CAT_TITLE = "Technology";
         public const string CAT_SLUG = "technology";
@@ -24,9 +19,6 @@ namespace Fan.Blog.Tests.Data
         public const string TAG1_SLUG = "aspnet";
         public const string TAG2_SLUG = "cs";
 
-        /// <summary>
-        /// Seeds 1 user and returns its id.
-        /// </summary>
         protected int Seed_1User()
         {
             var user = Actor.User;
@@ -35,10 +27,6 @@ namespace Fan.Blog.Tests.Data
             return user.Id;
         }
 
-        /// <summary>
-        /// Seeds 1 blog post associated with 1 category and 2 tags.
-        /// </summary>
-        /// <param name="db"></param>
         protected void Seed_1BlogPost_with_1Category_2Tags()
         {
             _db.Set<Meta>().AddRange(GetMetas());
@@ -47,12 +35,6 @@ namespace Fan.Blog.Tests.Data
             _db.SaveChanges();
         }
 
-        /// <summary>
-        /// Seeds a specified number of posts, even number posts are drafts and tagged with tag2, 
-        /// while odd number posts are published and tagged with tag1.
-        /// </summary>
-        /// <param name="db"></param>
-        /// <param name="numOfPosts"></param>
         protected void Seed_N_BlogPosts(int numOfPosts)
         {
             _db.Set<Meta>().AddRange(GetMetas());
@@ -61,10 +43,6 @@ namespace Fan.Blog.Tests.Data
             _db.SaveChanges();
         }
 
-        /// <summary>
-        /// Seeds a published parent page and returns its id.
-        /// </summary>
-        /// <returns></returns>
         protected int Seed_1Page()
         {
             _db.Users.Add(Actor.User);
@@ -81,14 +59,11 @@ namespace Fan.Blog.Tests.Data
             _db.SaveChanges();
         }
 
-        /// <summary>
-        /// Seeds images in Media table.
-        /// </summary>
-        /// <param name="filenameSlugged">The filename saved to media table, it's slugged with ext.</param>
         protected void SeedImages(string filenameSlugged)
         {
             _db.Users.Add(Actor.User);
-            _db.Set<Media>().Add(new Media {
+            _db.Set<Media>().Add(new Media
+            {
                 Id = 1,
                 AppType = EAppType.Blog,
                 FileName = filenameSlugged,
@@ -104,12 +79,6 @@ namespace Fan.Blog.Tests.Data
             _db.SaveChanges();
         }
 
-        // -------------------------------------------------------------------- private methods
-
-        /// <summary>
-        /// Returns some blog settings.
-        /// </summary>
-        /// <returns></returns>
         private List<Meta> GetMetas()
         {
             var metas = new List<Meta>
@@ -121,9 +90,6 @@ namespace Fan.Blog.Tests.Data
             return metas;
         }
 
-        /// <summary>
-        /// Returns a post associated with 1 category and 2 tags.
-        /// </summary>
         private Post GetBlogPost()
         {
             var cat = new Category { Slug = CAT_SLUG, Title = CAT_TITLE };
@@ -141,7 +107,6 @@ namespace Fan.Blog.Tests.Data
                 Type = EPostType.BlogPost,
                 Status = EPostStatus.Published,
             };
-            // this is outside because we are using post itself to create PostTag
             post.PostTags = new List<PostTag> {
                     new PostTag { Post = post, Tag = tag1 },
                     new PostTag { Post = post, Tag = tag2 },
@@ -150,11 +115,6 @@ namespace Fan.Blog.Tests.Data
             return post;
         }
 
-        /// <summary>
-        /// Returns a specified number of posts, even number posts are drafts and tagged with tag2, 
-        /// while odd number posts are published and tagged with tag1.
-        /// </summary>
-        /// <returns></returns>
         private List<Post> GetBlogPosts(int numOfPosts)
         {
             if (numOfPosts < 1) throw new ArgumentException("Param numOfPosts must be > 1");
@@ -175,14 +135,14 @@ namespace Fan.Blog.Tests.Data
                     Title = $"Test Post #{i}",
                     Slug = $"{POST_SLUG}-{i}",
                     Type = EPostType.BlogPost,
-                    Status = (i % 2 == 0) ? EPostStatus.Draft : EPostStatus.Published, // drafts / published
+                    Status = (i % 2 == 0) ? EPostStatus.Draft : EPostStatus.Published,
                 };
 
                 post.PostTags = i % 2 == 0
-                    ? new List<PostTag> { // posts tagged c#
+                    ? new List<PostTag> {
                         new PostTag { Post = post, Tag = tag2 },
                     }
-                    : new List<PostTag> { // posts tagged asp.net
+                    : new List<PostTag> {
                         new PostTag { Post = post, Tag = tag1 },
                     };
 
@@ -220,10 +180,6 @@ namespace Fan.Blog.Tests.Data
             return list;
         }
 
-        /// <summary>
-        /// Returns a published parent page.
-        /// </summary>
-        /// <returns></returns>
         private Post GetPage(int num = 1)
         {
             return new Post

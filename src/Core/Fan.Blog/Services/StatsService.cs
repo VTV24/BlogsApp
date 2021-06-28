@@ -31,10 +31,6 @@ namespace Fan.Blog.Services
             this.memeoryCache = memeoryCache;
         }
 
-        /// <summary>
-        /// Returns archive information.
-        /// </summary>
-        /// <returns></returns>
         public async Task<Dictionary<int, List<MonthItem>>> GetArchivesAsync()
         {
             return await distributedCache.GetAsync(BlogCache.KEY_ALL_ARCHIVES, BlogCache.Time_Archives, async () =>
@@ -70,10 +66,6 @@ namespace Fan.Blog.Services
             });
         }
 
-        /// <summary>
-        /// Returns total number of posts by each <see cref="EPostStatus"/>.
-        /// </summary>
-        /// <returns></returns>
         public async Task<PostCount> GetPostCountAsync()
         {
             return await distributedCache.GetAsync(BlogCache.KEY_POST_COUNT, BlogCache.Time_PostCount, async () =>
@@ -82,23 +74,17 @@ namespace Fan.Blog.Services
             });
         }
 
-        /// <summary>
-        /// Increases post view count.
-        /// </summary>
-        /// <param name="postType"></param>
-        /// <param name="postId"></param>
-        /// <returns></returns>
         public async Task IncViewCountAsync(EPostType postType, int postId)
         {
             var cacheKey = postType == EPostType.BlogPost ?
                 string.Format(BlogCache.KEY_POST_VIEW_COUNT, postId) :
                 string.Format(BlogCache.KEY_PAGE_VIEW_COUNT, postId);
-            var ip = (context == null || context.Connection.RemoteIpAddress == null) ? 
-                "::1" : // ip is null when running tests
+            var ip = (context == null || context.Connection.RemoteIpAddress == null) ?
+                "::1" :
                 context.Connection.RemoteIpAddress.ToString();
 
             var ipList = memeoryCache.Get<IList<string>>(cacheKey);
-            if (ipList == null) 
+            if (ipList == null)
             {
                 ipList = new List<string> { ip };
                 memeoryCache.Set(cacheKey, ipList, BlogCache.Time_ViewCount);

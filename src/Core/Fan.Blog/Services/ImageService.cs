@@ -17,9 +17,6 @@ using System.Threading.Tasks;
 
 namespace Fan.Blog.Services
 {
-    /// <summary>
-    /// The blog image service.
-    /// </summary>
     public class ImageService : IImageService
     {
         private readonly IMediaService _mediaSvc;
@@ -35,80 +32,29 @@ namespace Fan.Blog.Services
             _appSettings = appSettings.Value;
         }
 
-        // -------------------------------------------------------------------- const and config
-
-        /// <summary>
-        /// "Blog"
-        /// </summary>
         public const string BLOG_APP_NAME = "Blog";
 
-        /// <summary>
-        /// Blog accepted image types: .jpg .jpeg .png .gif
-        /// </summary>
-        /// <remarks>
-        /// Got the idea from WP https://en.support.wordpress.com/images/
-        /// For accepted file types https://en.support.wordpress.com/accepted-filetypes/
-        /// </remarks>
         public static readonly string[] Accepted_Image_Types = { ".jpg", ".jpeg", ".gif", ".png" };
 
-        /// <summary>
-        /// validFileTypes: ['.jpg', '.jpeg', '.png', '.gif']
-        /// </summary>
         public static string ValidFileTypesJson = JsonConvert.SerializeObject(Accepted_Image_Types);
 
-        /// <summary>
-        /// Max image file size is 5MB.
-        /// </summary>
         public static readonly long Max_File_Size = (long)(5).Megabytes().Bytes;
 
 
-        /// <summary>
-        /// Error message for valid file types.
-        /// </summary>
         public const string ERR_MSG_FILETYPE = "Only .jpg, .jpeg, .png and .gif are supported.";
 
-        /// <summary>
-        /// Error message for valid file size.
-        /// </summary>
         public const string ERR_MSG_FILESIZE = "File cannot be larger than 5MB.";
 
-        /// <summary>
-        /// The separator used in image paths is '/'.
-        /// </summary>
-        /// <remarks>
-        /// All <see cref="IStorageProvider"/> implementations should take this separator and replace 
-        /// it with your specific one.
-        /// </remarks>
         public const char IMAGE_PATH_SEPARATOR = '/';
 
-        /// <summary>
-        /// Large image (lg) size 2400 pixel (2x).
-        /// </summary>
         public const int LARGE_IMG_SIZE = 2400;
 
-        /// <summary>
-        /// Medium large image (ml) size 1800 pixel (1.5x).
-        /// </summary>
         public const int MEDIUM_LARGE_IMG_SIZE = 1800;
 
-        /// <summary>
-        /// Medium image (md) size 1200 pixel (1x default).
-        /// </summary>
         public const int MEDIUM_IMG_SIZE = 1200;
 
-        /// <summary>
-        /// Small image (sm) size 600 pixel.
-        /// </summary>
-        /// <remarks>
-        /// Good for media gallery, small low res phones.
-        /// </remarks>
         public const int SMALL_IMG_SIZE = 600;
 
-        /// <summary>
-        /// The different image resizes per image upload.
-        /// </summary>
-        /// <param name="uploadedOn"></param>
-        /// <returns></returns>
         public static List<ImageResizeInfo> GetImageResizeList(DateTimeOffset uploadedOn)
         {
             return new List<ImageResizeInfo> {
@@ -140,10 +86,6 @@ namespace Fan.Blog.Services
             };
         }
 
-        /// <summary>
-        /// For gif I only save original and small.
-        /// </summary>
-        /// <param name="uploadedOn"></param>
         public static List<ImageResizeInfo> GetImageResizeListForGif(DateTimeOffset uploadedOn)
         {
             return new List<ImageResizeInfo> {
@@ -160,12 +102,6 @@ namespace Fan.Blog.Services
             };
         }
 
-        /// <summary>
-        /// Returns the stored image path, "{app}/{year}/{month}" or "{app}/{year}/{month}/{sizePath}".
-        /// </summary>
-        /// <param name="uploadedOn"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
         public static string GetImagePath(DateTimeOffset uploadedOn, EImageSize size)
         {
             var app = BLOG_APP_NAME.ToLowerInvariant();
@@ -195,20 +131,12 @@ namespace Fan.Blog.Services
             return size == EImageSize.Original ? $"{app}/{year}/{month}" : $"{app}/{year}/{month}/{sizePath}";
         }
 
-        // -------------------------------------------------------------------- public methods
-
-        /// <summary>
-        /// Deletes an image from data source and storage.
-        /// </summary>
-        /// <param name="mediaId"></param>
-        /// <returns></returns>
         public async Task DeleteAsync(int mediaId)
         {
             var media = await _mediaSvc.GetMediaAsync(mediaId);
             var resizes = GetImageResizeList(media.UploadedOn);
-            var resizeCount = media.ResizeCount; // how many files to delete
+            var resizeCount = media.ResizeCount;
 
-            // delete file from storage
             await DeleteImageFileAsync(media, EImageSize.Original);
             if (resizeCount == 4)
             {
@@ -233,29 +161,19 @@ namespace Fan.Blog.Services
                 await DeleteImageFileAsync(media, EImageSize.Small);
             }
 
-            // delete from db
             await _mediaSvc.DeleteMediaAsync(mediaId);
         }
 
-        /// <summary>
-        /// Returns absolute url to an image.
-        /// </summary>
-        /// <remarks>
-        /// Based on the resize count, the url returned could be original or one of the resized image.
-        /// </remarks>
-        /// <param name="media">The media record representing the image.</param>
-        /// <param name="size">The image size.</param>
-        /// <returns></returns>
         public string GetAbsoluteUrl(Media media, EImageSize size)
         {
             var endpoint = _storageProvider.StorageEndpoint;
             var container = endpoint.EndsWith('/') ? _appSettings.MediaContainerName : $"/{_appSettings.MediaContainerName}";
 
             if ((size == EImageSize.Original || media.ResizeCount <= 0) ||
-                (media.ResizeCount == 1 && size != EImageSize.Small) || // small
-                (media.ResizeCount == 2 && size == EImageSize.MediumLarge) || // small, medium
-                (media.ResizeCount == 2 && size == EImageSize.Large) || // small, medium
-                (media.ResizeCount == 3 && size == EImageSize.Large)) // small, medium, medium large
+                (media.ResizeCount == 1 && size != EImageSize.Small) ||
+                (media.ResizeCount == 2 && size == EImageSize.MediumLarge) ||
+                (media.ResizeCount == 2 && size == EImageSize.Large) ||
+                (media.ResizeCount == 3 && size == EImageSize.Large))
             {
                 size = EImageSize.Original;
             }
@@ -266,19 +184,9 @@ namespace Fan.Blog.Services
             return $"{endpoint}{container}/{imagePath}/{fileName}";
         }
 
-        /// <summary>
-        /// Uploads image.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="userId"></param>
-        /// <param name="fileName"></param>
-        /// <param name="contentType">e.g. "image/jpeg"</param>
-        /// <param name="uploadFrom"></param>
-        /// <returns></returns>
         public async Task<Media> UploadAsync(Stream source, int userId, string fileName, string contentType,
             EUploadedFrom uploadFrom)
         {
-            // check if file type is supported
             var ext = Path.GetExtension(fileName).ToLower();
             var ctype = "." + contentType.Substring(contentType.LastIndexOf("/") + 1).ToLower();
             if (ext.IsNullOrEmpty() || !Accepted_Image_Types.Contains(ext) || !Accepted_Image_Types.Contains(ctype))
@@ -286,22 +194,17 @@ namespace Fan.Blog.Services
                 throw new NotSupportedException(ERR_MSG_FILETYPE);
             }
 
-            // check file size
             if (source.Length > Max_File_Size)
             {
                 throw new FanException(ERR_MSG_FILESIZE);
             }
 
-            // uploadedOn 
             var uploadedOn = DateTimeOffset.UtcNow;
 
-            // get the slugged filename and title from original filename
             var (fileNameSlugged, title) = ProcessFileName(fileName, uploadFrom);
 
-            // get unique filename
             var uniqueFileName = await GetUniqueFileNameAsync(fileNameSlugged, uploadedOn);
 
-            // get image resizes
             var resizes = contentType.Equals("image/gif") ?
                 GetImageResizeListForGif(uploadedOn) : GetImageResizeList(uploadedOn);
 
@@ -309,11 +212,6 @@ namespace Fan.Blog.Services
                 uploadedOn, EAppType.Blog, userId, uploadFrom);
         }
 
-        /// <summary>
-        /// Given a blog post's body html, it replaces all img tags with one that is updated for Repsonsive Images.
-        /// </summary>
-        /// <param name="body">A blog post's body html.</param>
-        /// <returns></returns>
         public async Task<string> ProcessResponsiveImageAsync(string body)
         {
             if (body.IsNullOrEmpty()) return body;
@@ -345,29 +243,18 @@ namespace Fan.Blog.Services
             }
         }
 
-        // -------------------------------------------------------------------- private methods
-
-        /// <summary>
-        /// Returns a img node that is enhanced for Responsive Images.
-        /// </summary>
-        /// <param name="imgNode"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// To understand the logic here <seealso cref="https://github.com/FanrayMedia/responsive-images"/>.
-        /// </remarks>
         private async Task<HtmlNode> GetResponsiveImgNodeAsync(HtmlNode imgNode)
         {
             var src = imgNode.Attributes["src"]?.Value;
             if (src.IsNullOrEmpty()) return null;
 
-            // e.g. src="https://localhost:44381/media/blog/2019/04/md/pic.png"
             var strAppType = $"{EAppType.Blog.ToString().ToLower()}/";
             var idxLastSlash = src.LastIndexOf('/');
             var fileName = src.Substring(idxLastSlash + 1, src.Length - idxLastSlash - 1);
             if (fileName.IsNullOrEmpty()) return null;
 
             var idxAppType = src.IndexOf(strAppType) + strAppType.Length;
-            var strTimeSize = src.Substring(idxAppType, idxLastSlash - idxAppType); //2019/04/md
+            var strTimeSize = src.Substring(idxAppType, idxLastSlash - idxAppType);
             var year = Convert.ToInt32(strTimeSize.Substring(0, 4));
             var month = Convert.ToInt32(strTimeSize.Substring(5, 2));
 
@@ -399,10 +286,9 @@ namespace Fan.Blog.Services
                 srcset = $"{GetAbsoluteUrl(media, EImageSize.Small)} {SMALL_IMG_SIZE}w, " +
                          $"{GetAbsoluteUrl(media, EImageSize.Medium)} {MEDIUM_IMG_SIZE}w, " +
                          $"{GetAbsoluteUrl(media, EImageSize.MediumLarge)} 2x, " +
-                         $"{GetAbsoluteUrl(media, EImageSize.Large)} 3x"; // cap it at lg, so no orig here
+                         $"{GetAbsoluteUrl(media, EImageSize.Large)} 3x";
             }
 
-            // use media width to calc maxWidth and defaultWidth, height is not involved
             var maxWidth = media.Width < MEDIUM_LARGE_IMG_SIZE ? media.Width : MEDIUM_LARGE_IMG_SIZE;
             var defaultWidth = media.Width < MEDIUM_LARGE_IMG_SIZE ? media.Width : MEDIUM_LARGE_IMG_SIZE;
             var sizes = $"(max-width: {maxWidth}px) 100vw, {defaultWidth}px";
@@ -413,54 +299,32 @@ namespace Fan.Blog.Services
             return imgNode;
         }
 
-        /// <summary>
-        /// Deletes an image file from storage.
-        /// </summary>
-        /// <param name="media"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
         private async Task DeleteImageFileAsync(Media media, EImageSize size)
         {
             var path = GetImagePath(media.UploadedOn, size);
             await _storageProvider.DeleteFileAsync(media.FileName, path, IMAGE_PATH_SEPARATOR);
         }
 
-        /// <summary>
-        /// Takes the original filename and returns a slugged filename and title attribute.
-        /// </summary>
-        /// <remarks>
-        /// If the filename is too long it shorten it. Then it generates a slugged filename which 
-        /// is hyphen separeated value for english original filenames, a random string value for 
-        /// non-english filenames.  The title attribute is original filename html-encoded for safe
-        /// display.
-        /// </remarks>
-        /// <param name="fileNameOrig">Original filename user is uploading.</param>
-        /// <param name="uploadFrom">This is used solely because of olw quirks I have to handle.</param>
-        /// <returns></returns>
         private (string fileNameSlugged, string title) ProcessFileName(string fileNameOrig, EUploadedFrom uploadFrom)
         {
-            // extra filename without ext, note this will also remove the extra path info from OLW
             var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileNameOrig);
 
-            // make sure file name is not too long
             if (fileNameWithoutExt.Length > MediaService.MEDIA_FILENAME_MAXLEN)
             {
                 fileNameWithoutExt = fileNameWithoutExt.Substring(0, MediaService.MEDIA_FILENAME_MAXLEN);
             }
 
-            // there is a quirk file uploaded from olw had "_2" suffixed to the name
             if (uploadFrom == EUploadedFrom.MetaWeblog && fileNameWithoutExt.EndsWith("_2"))
             {
                 fileNameWithoutExt = fileNameWithoutExt.Remove(fileNameWithoutExt.Length - 2);
             }
 
-            // slug file name
             var slug = Util.Slugify(fileNameWithoutExt);
-            if (slug.IsNullOrEmpty()) // slug may end up empty
+            if (slug.IsNullOrEmpty())
             {
                 slug = Util.RandomString(6);
             }
-            else if (uploadFrom == EUploadedFrom.MetaWeblog && slug == "thumb") // or may end up with only "thumb" for olw
+            else if (uploadFrom == EUploadedFrom.MetaWeblog && slug == "thumb")
             {
                 slug = string.Concat(Util.RandomString(6), "_thumb");
             }
@@ -472,12 +336,6 @@ namespace Fan.Blog.Services
             return (fileNameSlugged: fileNameSlugged, title: fileNameEncoded);
         }
 
-        /// <summary>
-        /// Returns a unique filename after checking datasource to see if the filename exists already.
-        /// </summary>
-        /// <param name="uploadedOn"></param>
-        /// <param name="fileNameSlugged"></param>
-        /// <returns></returns>
         private async Task<string> GetUniqueFileNameAsync(string fileNameSlugged, DateTimeOffset uploadedOn)
         {
             int i = 2;

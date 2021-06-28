@@ -18,9 +18,6 @@ using System.Threading.Tasks;
 
 namespace Fan.Blog.Tests.Integration
 {
-    /// <summary>
-    /// Integration test base for blog services.
-    /// </summary>
     public class BlogServiceIntegrationTestBase : BlogIntegrationTestBase
     {
         protected IBlogPostService _blogPostSvc;
@@ -37,40 +34,26 @@ namespace Fan.Blog.Tests.Integration
 
         public BlogServiceIntegrationTestBase()
         {
-            // ---------------------------------------------------------------- repos
-
             var catRepo = new SqlCategoryRepository(_db);
             var tagRepo = new SqlTagRepository(_db);
             var postRepo = new SqlPostRepository(_db);
-
-            // ---------------------------------------------------------------- mock SettingService 
 
             _settingSvcMock = new Mock<ISettingService>();
             _settingSvcMock.Setup(svc => svc.GetSettingsAsync<CoreSettings>()).Returns(Task.FromResult(new CoreSettings()));
             _settingSvcMock.Setup(svc => svc.GetSettingsAsync<BlogSettings>()).Returns(Task.FromResult(new BlogSettings()));
 
-            // ---------------------------------------------------------------- mock AppSettings
-
             var appSettingsMock = new Mock<IOptionsSnapshot<AppSettings>>();
             appSettingsMock.Setup(o => o.Value).Returns(new AppSettings());
-
-            // ---------------------------------------------------------------- mock IStorageProvider
 
             _storageProviderMock = new Mock<IStorageProvider>();
             _storageProviderMock.Setup(pro => pro.StorageEndpoint).Returns(STORAGE_ENDPOINT);
 
-            // ---------------------------------------------------------------- MediaService
-
             var mediaRepo = new SqlMediaRepository(_db);
             _mediaSvc = new MediaService(_storageProviderMock.Object, appSettingsMock.Object, mediaRepo);
-
-            // ---------------------------------------------------------------- Cache
 
             var serviceProvider = new ServiceCollection().AddMemoryCache().AddLogging().BuildServiceProvider();
             var memCacheOptions = serviceProvider.GetService<IOptions<MemoryDistributedCacheOptions>>();
             var cache = new MemoryDistributedCache(memCacheOptions);
-
-            // ---------------------------------------------------------------- LoggerFactory
 
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             var loggerBlogPostSvc = loggerFactory.CreateLogger<BlogPostService>();
@@ -78,16 +61,12 @@ namespace Fan.Blog.Tests.Integration
             var loggerCatSvc = loggerFactory.CreateLogger<CategoryService>();
             var loggerTagSvc = loggerFactory.CreateLogger<TagService>();
 
-            // ---------------------------------------------------------------- Mapper, Shortcode
-
             var mapper = BlogUtil.Mapper;
 
-            // ---------------------------------------------------------------- MediatR and Services
-
             var services = new ServiceCollection();
-            services.AddScoped<ServiceFactory>(p => p.GetService);  // MediatR.ServiceFactory
-            services.AddSingleton<IDistributedCache>(cache);        // cache
-            services.AddSingleton<FanDbContext>(_db);               // DbContext for repos
+            services.AddScoped<ServiceFactory>(p => p.GetService);   
+            services.AddSingleton<IDistributedCache>(cache);         
+            services.AddSingleton<FanDbContext>(_db);                  
             services.Scan(scan => scan
                .FromAssembliesOf(typeof(IMediator), typeof(ILogger), typeof(IBlogPostService), typeof(ISettingService))
                .AddClasses()

@@ -15,5 +15,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Fan\Fan.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Models\BlogPost.cs">
+      <Generator></Generator>
+    </Compile>
+  </ItemGroup>
   
 </Project>

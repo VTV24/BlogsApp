@@ -24,10 +24,6 @@ namespace Fan.WebApp.Manage.Admin
         public string CategoryListJsonStr { get; private set; }
         public int DefaultCategoryId { get; private set; }
 
-        /// <summary>
-        /// GET
-        /// </summary>
-        /// <returns></returns>
         public async Task OnGetAsync()
         {
             var blogSettings = await _settingSvc.GetSettingsAsync<BlogSettings>();
@@ -37,21 +33,11 @@ namespace Fan.WebApp.Manage.Admin
             CategoryListJsonStr = JsonConvert.SerializeObject(cats);
         }
 
-        /// <summary>
-        /// DELETE a category by id.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public async Task OnDeleteAsync(int id)
         {
             await _catSvc.DeleteAsync(id);
         }
 
-        /// <summary>
-        /// POST to create a new category.
-        /// </summary>
-        /// <param name="category"></param>
-        /// <returns></returns>
         public async Task<IActionResult> OnPostAsync([FromBody]Category category)
         {
             try
@@ -65,11 +51,6 @@ namespace Fan.WebApp.Manage.Admin
             }
         }
 
-        /// <summary>
-        /// POST to udpate an existing category.
-        /// </summary>
-        /// <param name="category"></param>
-        /// <returns></returns>
         public async Task<IActionResult> OnPostUpdateAsync([FromBody]Category category)
         {
             try
@@ -83,11 +64,6 @@ namespace Fan.WebApp.Manage.Admin
             }
         }
 
-        /// <summary>
-        /// POST to set default category.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public async Task OnPostDefaultAsync(int id)
         {
             await _catSvc.SetDefaultAsync(id);

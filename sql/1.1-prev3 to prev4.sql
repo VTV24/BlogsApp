@@ -37,7 +37,7 @@ END
 GO
 
 -- make sure Shortcodes plugin is active
-UPDATE [Core_Meta] 
+UPDATE [Core_Meta]
    SET [Value] = N'{"active":true,"folder":"Shortcodes"}'
    WHERE [Type] = 6 and [Key] = 'shortcodes'
 GO

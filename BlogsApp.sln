@@ -7,16 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2982C754-FBE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{81A32817-2BDD-4F54-A41E-E8B2015D0184}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{596A1022-8E0A-4705-BAAA-4217759203D1}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		.travis.yml = .travis.yml
-		appveyor.yml = appveyor.yml
-		azure-pipelines.yml = azure-pipelines.yml
-		CONTRIBUTING.md = CONTRIBUTING.md
-		README.md = README.md
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{4832F9A4-7DED-43DD-9354-B6CE7931D247}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fan", "src\Core\Fan\Fan.csproj", "{4CA7527D-1A19-47DF-AF24-AFB8907694E9}"
@@ -35,12 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Widgets", "Widgets", "{B073
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogTags", "src\Widgets\BlogTags\BlogTags.csproj", "{153316E2-F584-4C7E-8090-F0D3E786378A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{27E759ED-9E68-4AE7-BDE8-16D0222CD1DA}"
-	ProjectSection(SolutionItems) = preProject
-		sql\1.0-1.1.sql = sql\1.0-1.1.sql
-		sql\1.1-prev3 to prev4.sql = sql\1.1-prev3 to prev4.sql
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogArchives", "src\Widgets\BlogArchives\BlogArchives.csproj", "{7BE27F20-9232-470F-ABC1-F0FCD54BD17D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogCategories", "src\Widgets\BlogCategories\BlogCategories.csproj", "{84328837-CF2B-4AD3-A6FC-5D2D171996FA}"
@@ -58,14 +42,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fan.Blog.Tests", "test\Fan.Blog.Tests\Fan.Blog.Tests.csproj", "{526E9DCF-C0F3-45E7-AB6E-F90DFE5F06E3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Editor.md", "src\SysPlugins\Editor.md\Editor.md.csproj", "{5FED1279-4C23-4E5C-A89D-0255FE2B5E80}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{3F248C48-DADD-4659-8D32-9326706303EC}"
-	ProjectSection(SolutionItems) = preProject
-		.github\ISSUE_TEMPLATE\BUG_REPORT.md = .github\ISSUE_TEMPLATE\BUG_REPORT.md
-		.github\ISSUE_TEMPLATE\FEATURE_REQUEST.md = .github\ISSUE_TEMPLATE\FEATURE_REQUEST.md
-		.github\FUNDING.yml = .github\FUNDING.yml
-		.github\PULL_REQUEST_TEMPLATE.md = .github\PULL_REQUEST_TEMPLATE.md
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,7 +128,6 @@ Global
 		{C4177D54-A0EA-4922-AE92-C211E4D62B4C} = {4BFCF62E-6739-4EB4-84B3-FFF528D3F4E2}
 		{526E9DCF-C0F3-45E7-AB6E-F90DFE5F06E3} = {81A32817-2BDD-4F54-A41E-E8B2015D0184}
 		{5FED1279-4C23-4E5C-A89D-0255FE2B5E80} = {4BFCF62E-6739-4EB4-84B3-FFF528D3F4E2}
-		{3F248C48-DADD-4659-8D32-9326706303EC} = {596A1022-8E0A-4705-BAAA-4217759203D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1FC29A1-2BF1-46BD-9169-3C33C1C4494F}

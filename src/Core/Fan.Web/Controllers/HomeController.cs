@@ -44,13 +44,6 @@ namespace Fan.Web.Controllers
             this.logger = logger;
         }
 
-        /// <summary>
-        /// Site home.
-        /// </summary>
-        /// <param name="page">Page number when home is set to the blog app.</param>
-        /// <returns>
-        /// View name and its view model.
-        /// </returns>
         [ModelPreRender]
         public async Task<IActionResult> Index(int? page)
         {
@@ -72,48 +65,25 @@ namespace Fan.Web.Controllers
                 return View(catPath, catModel);
             }
 
-            // default to blog app
             var (indexPath, indexModel) = await homeHelper.GetBlogIndexAsync(page);
             return View(indexPath, indexModel);
         }
 
-        /// <summary>
-        /// 404 comes here.
-        /// </summary>
-        /// <param name="statusCode"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// 500 caused by an unhandled exception goes to <see cref="Error"/> action.
-        /// </remarks>
         [HttpGet("/Home/ErrorCode/{statusCode}")]
         public IActionResult ErrorCode(int statusCode) => statusCode == 404 ? View("404") : View("Error");
 
-        /// <summary>
-        /// Friendly error page in Production, in Development the DeveloperExceptionPage will be 
-        /// used instead coming here.
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>
-        /// Unhandled FanException comes here and its message will be displayed. The 500 or other 
-        /// unhandled exceptions will come here also, a hard coded message is displayed on Error.cshtml.
-        /// 
-        /// For actions that need to display message on its page, i.e. a form that fails validation
-        /// should catch FanException to display its message on its page.
-        /// </remarks>
         public IActionResult Error()
         {
             var feature = HttpContext.Features.Get<IExceptionHandlerFeature>();
             var error = feature?.Error;
 
-            // FanException occurred unhandled
-            if (error !=null && error is FanException)
+            if (error != null && error is FanException)
             {
-                return ((FanException)error).ExceptionType == EExceptionType.ResourceNotFound ? 
+                return ((FanException)error).ExceptionType == EExceptionType.ResourceNotFound ?
                     View("404") :
                     View("Error", error.Message);
             }
 
-            // 500 or exception other than FanException occurred unhandled
             return View();
         }
 
